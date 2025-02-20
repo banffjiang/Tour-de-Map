@@ -4,7 +4,21 @@
    // Set your Mapbox access token here
  mapboxgl.accessToken = 'pk.eyJ1IjoiYmFuZmZqaWFuZyIsImEiOiJjbTdja3NyaTcwcHE1MnBvY3ducGRidDRxIn0.l8GsCpwctn15F-iZov3jUQ';
 
-   // Initialize the map
+ function updateTimeDisplay() {
+    timeFilter = Number(timeSlider.value);
+  
+    if (timeFilter === -1) {
+      selectedTime.textContent = '';
+      anyTimeLabel.style.display = 'block';
+    } else {
+      selectedTime.textContent = formatTime(timeFilter);
+      anyTimeLabel.style.display = 'none';
+    }
+}
+
+timeSlider.addEventListener('input', updateTimeDisplay);
+
+updateTimeDisplay();
    const map = new mapboxgl.Map({
      container: 'map', // ID of the div where the map will render
      style: 'mapbox://styles/mapbox/streets-v12', // Map style
