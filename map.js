@@ -18,7 +18,21 @@
 
 timeSlider.addEventListener('input', updateTimeDisplay);
 
+
+
 updateTimeDisplay();
+
+let timeFilter = -1;
+
+const timeSlider = document.getElementById('time-slider');
+const selectedTime = document.getElementById('selected-time');
+const anyTimeLabel = document.getElementById('any-time');
+
+function formatTime(minutes) {
+    const date = new Date(0, 0, 0, 0, minutes); // Set hours & minutes
+    return date.toLocaleString('en-US', { timeStyle: 'short' }); // Format as HH:MM AM/PM
+}
+
    const map = new mapboxgl.Map({
      container: 'map', // ID of the div where the map will render
      style: 'mapbox://styles/mapbox/streets-v12', // Map style
