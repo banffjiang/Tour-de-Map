@@ -16,3 +16,35 @@ body {
     height: 100%;
     pointer-events: none;
 }
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1em;
+    width: 100%;
+}
+
+header label {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+#time-slider {
+    width: 200px;
+    margin-top: 0.5em;
+}
+
+#selected-time,
+#any-time {
+    display: block;
+    text-align: right;
+    font-size: 0.9em;
+}
+
+#any-time {
+    color: #666;
+    font-style: italic;
+}

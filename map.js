@@ -4,6 +4,17 @@
    // Set your Mapbox access token here
  mapboxgl.accessToken = 'pk.eyJ1IjoiYmFuZmZqaWFuZyIsImEiOiJjbTdja3NyaTcwcHE1MnBvY3ducGRidDRxIn0.l8GsCpwctn15F-iZov3jUQ';
 
+ let timeFilter = -1;
+
+const timeSlider = document.getElementById('time-slider');
+const selectedTime = document.getElementById('selected-time');
+const anyTimeLabel = document.getElementById('any-time');
+
+function formatTime(minutes) {
+    const date = new Date(0, 0, 0, 0, minutes); // Set hours & minutes
+    return date.toLocaleString('en-US', { timeStyle: 'short' }); // Format as HH:MM AM/PM
+}
+
  function updateTimeDisplay() {
     timeFilter = Number(timeSlider.value);
   
@@ -22,24 +33,14 @@ timeSlider.addEventListener('input', updateTimeDisplay);
 
 updateTimeDisplay();
 
-let timeFilter = -1;
 
-const timeSlider = document.getElementById('time-slider');
-const selectedTime = document.getElementById('selected-time');
-const anyTimeLabel = document.getElementById('any-time');
-
-function formatTime(minutes) {
-    const date = new Date(0, 0, 0, 0, minutes); // Set hours & minutes
-    return date.toLocaleString('en-US', { timeStyle: 'short' }); // Format as HH:MM AM/PM
-}
-
-   const map = new mapboxgl.Map({
-     container: 'map', // ID of the div where the map will render
-     style: 'mapbox://styles/mapbox/streets-v12', // Map style
-     center: [-71.09415, 42.36027], // [longitude, latitude]
-     zoom: 12, // Initial zoom level
-     minZoom: 5, // Minimum allowed zoom
-     maxZoom: 18 // Maximum allowed zoom
+    const map = new mapboxgl.Map({
+        container: 'map', // ID of the div where the map will render
+        style: 'mapbox://styles/mapbox/streets-v12', // Map style
+        center: [-71.09415, 42.36027], // [longitude, latitude]
+        zoom: 12, // Initial zoom level
+        minZoom: 5, // Minimum allowed zoom
+        maxZoom: 18 // Maximum allowed zoom
    });
 
    map.on('load', () => {
