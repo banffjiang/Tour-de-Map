@@ -14,3 +14,21 @@ html, body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for effect */
     border-radius: 8px; /* Optional: rounded corners */
   }
+  svg circle {
+    fill: steelblue;
+    fill-opacity: 0.6;
+    stroke: white;
+    pointer-events: auto;
+  }
+  
+  .tooltip {
+    position: absolute;
+    padding: 5px 10px;
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }

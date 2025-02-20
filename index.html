@@ -15,10 +15,19 @@
 <body>
     <header>
         <h1>🚴🏼‍♀️ Tour de Map</h1>
+        <label>
+            Filter by Time:
+            <input type="range" id="time-slider" min="-1" max="1440" value="-1">
+            <time id="selected-time"></time>
+            <em id="any-time">(any time)</em>
+        </label>
     </header>
     
-    <div id="map"></div>
-
+    <div id="map">
+        <svg></svg>
+    </div>
+    <div id="tooltip"></div>
+      
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <!-- Load Mapbox GL JS -->
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
