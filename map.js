@@ -1,52 +1,47 @@
+// Set your Mapbox access token here
+mapboxgl.accessToken = 'pk.eyJ1IjoiYmFuZmZqaWFuZyIsImEiOiJjbTdja3NyaTcwcHE1MnBvY3ducGRidDRxIn0.l8GsCpwctn15F-iZov3jUQ';
 
-
-
-   // Set your Mapbox access token here
- mapboxgl.accessToken = 'pk.eyJ1IjoiYmFuZmZqaWFuZyIsImEiOiJjbTdja3NyaTcwcHE1MnBvY3ducGRidDRxIn0.l8GsCpwctn15F-iZov3jUQ';
-
- let timeFilter = -1;
+let timeFilter = -1;
 
 const timeSlider = document.getElementById('time-slider');
 const selectedTime = document.getElementById('selected-time');
 const anyTimeLabel = document.getElementById('any-time');
 
 function formatTime(minutes) {
-    const date = new Date(0, 0, 0, 0, minutes); // Set hours & minutes
-    return date.toLocaleString('en-US', { timeStyle: 'short' }); // Format as HH:MM AM/PM
+    const date = new Date(0, 0, 0, 0, minutes);
+    return date.toLocaleString('en-US', { timeStyle: 'short' });
 }
 
- function updateTimeDisplay() {
+function updateTimeDisplay() {
     timeFilter = Number(timeSlider.value);
-  
+
     if (timeFilter === -1) {
-      selectedTime.textContent = '';
-      anyTimeLabel.style.display = 'block';
+        selectedTime.textContent = '';
+        anyTimeLabel.style.display = 'block';
     } else {
-      selectedTime.textContent = formatTime(timeFilter);
-      anyTimeLabel.style.display = 'none';
+        selectedTime.textContent = formatTime(timeFilter);
+        anyTimeLabel.style.display = 'none';
     }
+
 }
 
 timeSlider.addEventListener('input', updateTimeDisplay);
-
-
-
 updateTimeDisplay();
 
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [-71.09415, 42.36027],
+    zoom: 12,
+    minZoom: 5,
+    maxZoom: 18
+});
 
-    const map = new mapboxgl.Map({
-        container: 'map', // ID of the div where the map will render
-        style: 'mapbox://styles/mapbox/streets-v12', // Map style
-        center: [-71.09415, 42.36027], // [longitude, latitude]
-        zoom: 12, // Initial zoom level
-        minZoom: 5, // Minimum allowed zoom
-        maxZoom: 18 // Maximum allowed zoom
-   });
-
-   map.on('load', () => {
+map.on('load', () => {
     const svg = d3.select('#map').select('svg');
     let stations = [];
     let circles;
+    let trips = [];
 
     function getCoords(station) {
         const point = new mapboxgl.LngLat(+station.lon, +station.lat);
@@ -55,9 +50,8 @@ updateTimeDisplay();
     }
 
     function updatePositions() {
-        circles
-            .attr('cx', d => getCoords(d).cx)
-            .attr('cy', d => getCoords(d).cy);
+        circles.attr('cx', d => getCoords(d).cx)
+               .attr('cy', d => getCoords(d).cy);
     }
 
     const tooltip = d3.select("body").append("div")
@@ -88,58 +82,60 @@ updateTimeDisplay();
         const trafficUrl = 'https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv';
         d3.csv(trafficUrl).then(data => {
             trips = data;
-
-            let departures = d3.rollup(
-                trips,
-                v => v.length,
-                d => d.start_station_id
-            );
-
-            let arrivals = d3.rollup(
-                trips,
-                v => v.length,
-                d => d.end_station_id
-            );
-
-            stations = stations.map(station => {
-                let id = station.short_name;
-                station.arrivals = arrivals.get(id) ?? 0;
-                station.departures = departures.get(id) ?? 0;
-                station.totalTraffic = station.arrivals + station.departures;
-                return station;
-            });
-
-            radiusScale = d3
-                .scaleSqrt()
-                .domain([0, d3.max(stations, d => d.totalTraffic)])
-                .range([0, 25]);
-
-            circles
-                .data(stations)
-                .transition()
-                .duration(500)
-                .attr('r', d => radiusScale(d.totalTraffic));
-
-            circles.on("mouseover", (event, d) => {
-                tooltip.style("display", "block")
-                    .html(`${d.totalTraffic} Trips (${d.departures} Departures, ${d.arrivals} Arrivals)`)
-                    .style("left", (event.pageX + 10) + "px")
-                    .style("top", (event.pageY + 10) + "px");
-            })
-            .on("mousemove", (event) => {
-                tooltip.style("left", (event.pageX + 10) + "px")
-                    .style("top", (event.pageY + 10) + "px");
-            })
-            .on("mouseout", () => {
-                tooltip.style("display", "none");
-            });
-
+            updateTrafficData();
         }).catch(error => {
             console.error('Error loading traffic data:', error);
         });
     }).catch(error => {
         console.error('Error loading JSON:', error);
     });
+
+    function filterTripsByTime(data) {
+        if (timeFilter === -1) return data;
+
+        return data.filter(trip => {
+            const startTime = parseInt(trip.start_time.split(":")[0]) * 60 + parseInt(trip.start_time.split(":")[1]);
+            return startTime >= timeFilter;
+        });
+    }
+
+    function updateTrafficData() {
+        let filteredTrips = filterTripsByTime(trips);
+
+        let departures = d3.rollup(filteredTrips, v => v.length, d => d.start_station_id);
+        let arrivals = d3.rollup(filteredTrips, v => v.length, d => d.end_station_id);
+
+        stations = stations.map(station => {
+            let id = station.short_name;
+            station.arrivals = arrivals.get(id) ?? 0;
+            station.departures = departures.get(id) ?? 0;
+            station.totalTraffic = station.arrivals + station.departures;
+            return station;
+        });
+
+        let radiusScale = d3.scaleSqrt()
+            .domain([0, d3.max(stations, d => d.totalTraffic)])
+            .range([0, 25]);
+
+        circles.data(stations)
+            .transition()
+            .duration(500)
+            .attr('r', d => radiusScale(d.totalTraffic));
+
+        circles.on("mouseover", (event, d) => {
+            tooltip.style("display", "block")
+                .html(`${d.totalTraffic} Trips (${d.departures} Departures, ${d.arrivals} Arrivals)`)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY + 10) + "px");
+        })
+        .on("mousemove", (event) => {
+            tooltip.style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY + 10) + "px");
+        })
+        .on("mouseout", () => {
+            tooltip.style("display", "none");
+        });
+    }
 
     map.addSource('boston_route', {
         type: 'geojson',
