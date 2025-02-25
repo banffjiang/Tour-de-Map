@@ -8,36 +8,24 @@ body {
     margin: auto;
     padding: 1em;
   }
-
-header {
+  
+  header {
     display: flex;
-    justify-content: space-between;
+    gap: 1em;
     align-items: baseline;
     margin-bottom: 1em;
-    width: 100%;
-}
-
-header label {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+  }
+    
+  label {
     margin-left: auto;
-    margin-right: 20px;
-}
-
-#time-slider {
-    width: 200px;
-    margin-top: 0.5em;
-}
-
-#selected-time,
-#any-time {
+  }
+    
+  time, em {
     display: block;
-    text-align: right;
-    font-size: 0.9em;
-}
-
-#any-time {
-    color: #666;
+  }
+    
+  em {
+    color: #888;
     font-style: italic;
-}
+  }
+    

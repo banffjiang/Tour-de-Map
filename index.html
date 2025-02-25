@@ -13,19 +13,19 @@
 
 </head>
 <body>
-    <header>
-        <h1>🚴🏼‍♀️ Tour de Map</h1>
-        <label>
-            Filter by Time:
-            <input type="range" id="time-slider" min="-1" max="1440" value="-1">
-            <time id="selected-time"></time>
-            <em id="any-time">(any time)</em>
-        </label>
+  <h1>🚴🏼‍♀️ Tour de Map</h1>
 
-        <p>
-        This is an interactive map visualization of bike traffic in the Boston/Cambridge area throughout the day
-        </p>
-    </header>
+  <label>
+    Filter by Time:
+    <input type="range" id="time-slider" min="-1" max="1440" value="-1">
+    <time id="selected-time"></time>
+    <em id="any-time">(any time)</em>
+  </label>
+
+    <p>
+    This is an interactive map visualization of bike traffic in the Boston/Cambridge area throughout the day
+    </p>
+    
     
     <div id="map">
         <svg></svg>
@@ -36,16 +36,17 @@
         <div style="--departure-ratio: 0.5">Balanced</div>
         <div style="--departure-ratio: 0">More Arrivals</div>
       </div>
+
     <div id="tooltip" style="
-    position: absolute;
-    display: none;
-    background: white;
-    padding: 5px;
-    border: 1px solid black;
-    border-radius: 6px;
-    font-size: 12px;
-    pointer-events: none;
-  "></div>
+        position: absolute;
+        display: none;
+        background: white;
+        padding: 5px;
+        border: 1px solid black;
+        border-radius: 6px;
+        font-size: 12px;
+        pointer-events: none;
+    "></div>
       
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
