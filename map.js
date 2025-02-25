@@ -206,21 +206,23 @@ map.on('load', () => {
             filteredStations = [...stations];
             filterTripsbyTime(); 
 
-            const radiusScale = d3.scaleSqrt()
+            const radiusScale = d3
+                .scaleSqrt()
                 .domain([0, d3.max(filteredStations, d => d.totalTraffic)])
                 .range(timeFilter === -1 ? [0, 25] : [3, 50]);
 
-            const colorScale = d3.scaleLinear()
-                .domain([0, 1])
-                .range(['darkorange', 'steelblue']);
+            // const colorScale = d3.scaleLinear()
+            //     .domain([0, 1])
+            //     .range(['darkorange', 'steelblue']);
             
-            const circles = svg.selectAll('circle')
-                .data(filteredStations)
-                .enter()
-                .append('circle')
-                .style("--departure-ratio", d => 
-                    d.totalTraffic > 0 ? stationFlow(d.departures / d.totalTraffic) : 0.5
-                );
+            // const circles = svg
+            //     .selectAll('circle')
+            //     .data(filteredStations)
+            //     .enter()
+            //     .append('circle')
+            //     .style("--departure-ratio", d => 
+            //         d.totalTraffic > 0 ? stationFlow(d.departures / d.totalTraffic) : 0.5
+            //     );
 
             updatePositions(radiusScale);
 
